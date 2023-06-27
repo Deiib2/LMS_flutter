@@ -80,11 +80,6 @@ class _MyDrawerState extends State<MyDrawer> {
         runSpacing: 16,
         children: [
           ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Home'),
-            onTap: () {},
-          ),
-          ListTile(
             leading: const Icon(Icons.search),
             title: const Text('Explore'),
             onTap: () {

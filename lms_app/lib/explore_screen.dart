@@ -20,15 +20,15 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Future<List<Item>> itemsFuture = getItems();
 
   static Future<List<Item>> getItems() async {
-    const url = '$baseUrl/api/guest/allItems';
+    const url = '$baseUrl/api/guest/allItems?limit=30&page=1';
     final response = await http.get(Uri.parse(url));
     final body = json.decode(response.body);
     print(response.body);
-    return body.map<Item>(Item.fromJson).toList();
+    return body['items'].map<Item>(Item.fromJson).toList();
   }
 
   Future<List<Item>> searchItems() async {
-    const url = '$baseUrl/api/guest/search';
+    const url = '$baseUrl/api/guest/search?limit=30&page=1';
     final body1 = {
       'title': searchController.text,
       'author': searchController.text,
@@ -41,18 +41,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
       },
     );
     final body = json.decode(response.body);
-    return body.map<Item>(Item.fromJson).toList();
+    print(response.body);
+    return body['items'].map<Item>(Item.fromJson).toList();
   }
 
-  Future<void> refresh() async {
-    setState(() {
-      if (searchController.text == '') {
-        itemsFuture = getItems();
-      } else {
-        itemsFuture = searchItems();
-      }
-    });
-  }
+  Future<void> refresh() async {}
 
   @override
   void initState() {
@@ -108,6 +101,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             physics: const BouncingScrollPhysics(
                                 parent: AlwaysScrollableScrollPhysics()),
                             child: Column(children: [
+                              if (items.isEmpty)
+                                const Center(child: Text('No items found')),
                               ListView.separated(
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,

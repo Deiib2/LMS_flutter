@@ -6,11 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 Widget buildItemCard(Item item) {
-  final itemcover = item.title == 'Rich Dad, Poor Dad'
-      ? 'assets/images/Rich_dad_cover.jpg'
-      : item.title == 'The Lord of the Rings'
-          ? 'assets/images/lotr_cover.jpg'
-          : 'assets/images/bookcover.jpg';
   return Card(
     margin: const EdgeInsets.all(8),
     child: Padding(
@@ -18,10 +13,21 @@ Widget buildItemCard(Item item) {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image(
-            image: AssetImage(itemcover),
-            height: 200.0,
-          ),
+          (item.imageUrl != null && item.imageUrl != ''
+              ? Image.network(
+                  item.imageUrl!,
+                  height: 200.0,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Image(
+                      image: AssetImage('assets/images/BookCoverNotFound.jpg'),
+                      height: 200.0,
+                    );
+                  },
+                )
+              : const Image(
+                  image: AssetImage('assets/images/BookCoverNotFound.jpg'),
+                  height: 200.0,
+                )),
           Padding(
             padding: const EdgeInsets.all(8),
             child: Column(
@@ -185,11 +191,6 @@ class _MyItemCardState extends State<MyItemCard> {
 
   @override
   Widget build(BuildContext context) {
-    final itemcover = widget.item.title == 'Rich Dad, Poor Dad'
-        ? 'assets/images/Rich_dad_cover.jpg'
-        : widget.item.title == 'The Lord of the Rings'
-            ? 'assets/images/lotr_cover.jpg'
-            : 'assets/images/bookcover.jpg';
     return Card(
       margin: const EdgeInsets.all(8),
       child: Padding(
@@ -197,10 +198,22 @@ class _MyItemCardState extends State<MyItemCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image(
-              image: AssetImage(itemcover),
-              height: 200.0,
-            ),
+            (widget.item.imageUrl != null && widget.item.imageUrl != ''
+                ? Image.network(
+                    widget.item.imageUrl!,
+                    height: 200.0,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Image(
+                        image:
+                            AssetImage('assets/images/BookCoverNotFound.jpg'),
+                        height: 200.0,
+                      );
+                    },
+                  )
+                : const Image(
+                    image: AssetImage('assets/images/BookCoverNotFound.jpg'),
+                    height: 200.0,
+                  )),
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(

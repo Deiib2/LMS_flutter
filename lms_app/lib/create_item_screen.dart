@@ -17,6 +17,7 @@ class CreateItem extends StatefulWidget {
 class _CreateItemState extends State<CreateItem> {
   final _titleController = TextEditingController();
   final _typeController = TextEditingController();
+  final _imageUrlController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _authorController = TextEditingController();
   final _totalCopiesController = TextEditingController();
@@ -28,9 +29,20 @@ class _CreateItemState extends State<CreateItem> {
 
   submitItem() async {
     const url = '$baseUrl/api/librarian/newItem';
+    if (_totalCopiesController.text == '') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter total copies of the item'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
     final body = {
       'title': _titleController.text,
       'type': _typeController.text,
+      'imageUrl': _imageUrlController.text,
       'description': _descriptionController.text,
       'author': _authorController.text,
       'totalCopies': int.parse(_totalCopiesController.text),
@@ -48,11 +60,26 @@ class _CreateItemState extends State<CreateItem> {
       print('hiii $json');
       _titleController.clear();
       _typeController.clear();
+      _imageUrlController.clear();
       _descriptionController.clear();
       _authorController.clear();
       _totalCopiesController.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Item created successfully'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
     } else {
       print('error $json');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $json'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -87,6 +114,16 @@ class _CreateItemState extends State<CreateItem> {
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Type',
+                    fillColor: Colors.white,
+                    filled: true,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: _imageUrlController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Image URL',
                     fillColor: Colors.white,
                     filled: true,
                   ),
